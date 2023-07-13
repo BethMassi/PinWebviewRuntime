@@ -3,15 +3,15 @@ This sample shows how to use and distribute a fixed Version Windows WebView2 Run
 
 1. Download the Fixed version installer packages from here: https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-section
 2. Extract the packages into a `Runtimex86`, `Runtimex64` and `RuntimeARM64` folders in your solution folder. This will keep the files outside your project and keep your Solution Explorer clean.
+
+   From a terminal:
    `expand {path to the package} -F:* {path to the destination folder}`
 
    Example:
-   
-   `expand "C:\Downloads\Microsoft.WebView2.FixedVersionRuntime.114.0.1823.79.x64.cab" -F:* C\src\MySolution\Runtimex64`
-   
-   `expand "C:\Downloads\Microsoft.WebView2.FixedVersionRuntime.114.0.1823.79.x86.cab" -F:* C\src\MySolution\Runtimex86`
-   
-   `expand "C:\Downloads\Microsoft.WebView2.FixedVersionRuntime.114.0.1823.79.ARM64.cab" -F:* C\src\MySolution\RuntimeARM64`
+   ```
+   expand "C:\Downloads\Microsoft.WebView2.FixedVersionRuntime.114.0.1823.79.x64.cab" -F:* C\src\MySolution\Runtimex64`
+   expand "C:\Downloads\Microsoft.WebView2.FixedVersionRuntime.114.0.1823.79.x86.cab" -F:* C\src\MySolution\Runtimex86`
+   expand "C:\Downloads\Microsoft.WebView2.FixedVersionRuntime.114.0.1823.79.ARM64.cab" -F:* C\src\MySolution\RuntimeARM64`
    
 4. Add the following code to CreateMauiApp() in MauiProgram.cs: 
    ```
