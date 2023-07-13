@@ -1,0 +1,82 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <TargetFrameworks>net7.0-android;net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
+        <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
+        <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
+        <!-- <TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks> -->
+        <OutputType>Exe</OutputType>
+        <RootNamespace>MauiApp_PinWebviewRuntime</RootNamespace>
+        <UseMaui>true</UseMaui>
+        <SingleProject>true</SingleProject>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <EnableDefaultCssItems>false</EnableDefaultCssItems>
+
+        <!-- Display name -->
+        <ApplicationTitle>MauiApp-PinWebviewRuntime</ApplicationTitle>
+
+        <!-- App Identifier -->
+        <ApplicationId>com.companyname.mauiapp_pinwebviewruntime</ApplicationId>
+        <ApplicationIdGuid>452706FB-7D5A-4AA2-A9AC-45E33534EAB0</ApplicationIdGuid>
+
+        <!-- Versions -->
+        <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+        <ApplicationVersion>1</ApplicationVersion>
+
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">24.0</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+        <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- App Icon -->
+        <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+
+        <!-- Splash Screen -->
+        <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+
+        <!-- Images -->
+        <MauiImage Include="Resources\Images\*" />
+        <MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
+
+        <!-- Custom Fonts -->
+        <MauiFont Include="Resources\Fonts\*" />
+
+        <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+        <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+    </ItemGroup>
+  
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />        
+    </ItemGroup>  
+  
+    <!-- Distribute Fixed Version Windows WebView2 Runtime with your MAUI App  
+    1. Download the Fixed version installer packages from here: https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-section
+    2. Extract the files into the Runtimex86, Runtimex64 and RuntimeARM64 folders your solution folder:
+        expand {path to the package} -F:* {path to the destination folder}
+    3. Add the following code to CreateMauiApp() in MauiProgram.cs: 
+       #if WINDOWS
+               string relativePath = @"..\Runtime";
+               string basePath = AppContext.BaseDirectory;
+               string wvrPath = Path.Combine(basePath, relativePath);
+               Environment.SetEnvironmentVariable("WEBVIEW2_BROWSER_EXECUTABLE_FOLDER", wvrPath);
+       #endif
+    -->    
+    <Target AfterTargets="Build" Name="CopyWebViewRuntime" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">      
+      <ItemGroup Condition="$(PlatformTarget) == 'x86'">
+        <RUNTIME Include="..\Runtimex86\**\*.*" />
+      </ItemGroup>
+      <ItemGroup Condition="$(PlatformTarget) == 'x64'">
+        <RUNTIME Include="..\Runtimex64\**\*.*" />
+      </ItemGroup>
+      <ItemGroup Condition="$(PlatformTarget) == 'ARM64'">
+        <RUNTIME Include="..\RuntimeARM64\**\*.*" />
+      </ItemGroup>      
+       <Copy SourceFiles="@(RUNTIME)" DestinationFolder="$(TargetDir)\Runtime\%(RecursiveDir)" SkipUnchangedFiles="true" />
+    </Target>  
+     
+
+</Project>
