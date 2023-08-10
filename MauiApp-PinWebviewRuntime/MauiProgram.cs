@@ -8,10 +8,11 @@ public static class MauiProgram
 	public static MauiApp CreateMauiApp()
 	{
 #if WINDOWS
-        string relativePath = @"..\Runtime";
+        string relativePath = @"\Runtime";
         string basePath = AppContext.BaseDirectory;
         string wvrPath = Path.Combine(basePath, relativePath);        
-        Environment.SetEnvironmentVariable("WEBVIEW2_BROWSER_EXECUTABLE_FOLDER", wvrPath);
+        Environment.SetEnvironmentVariable("WEBVIEW2_BROWSER_EXECUTABLE_FOLDER", wvrPath);       
+
 #endif
 
         var builder = MauiApp.CreateBuilder();

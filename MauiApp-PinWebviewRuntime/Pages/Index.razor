@@ -5,3 +5,21 @@
 Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+<h2>@version</h2>
+
+@code {
+
+    string version = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+
+#if WINDOWS
+
+   version = $"WebView2 version: {Microsoft.Web.WebView2.Core.CoreWebView2Environment.GetAvailableBrowserVersionString()}";
+
+#endif
+
+    }
+}

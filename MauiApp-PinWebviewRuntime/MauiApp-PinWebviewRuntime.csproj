@@ -29,9 +29,11 @@
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
         <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
-    </PropertyGroup>
 
-    <ItemGroup>
+    </PropertyGroup>
+ 
+
+  <ItemGroup>
         <!-- App Icon -->
         <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 
@@ -47,36 +49,38 @@
 
         <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
         <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-    </ItemGroup>
-  
-    <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />        
-    </ItemGroup>  
-  
+
+
     <!-- Distribute Fixed Version Windows WebView2 Runtime with your MAUI App  
     1. Download the Fixed version installer packages from here: https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-section
     2. Extract the files into the Runtimex86, Runtimex64 and RuntimeARM64 folders your solution folder:
         expand {path to the package} -F:* {path to the destination folder}
+       
     3. Add the following code to CreateMauiApp() in MauiProgram.cs: 
        #if WINDOWS
-               string relativePath = @"..\Runtime";
+               string relativePath = @"\Runtime";
                string basePath = AppContext.BaseDirectory;
                string wvrPath = Path.Combine(basePath, relativePath);
                Environment.SetEnvironmentVariable("WEBVIEW2_BROWSER_EXECUTABLE_FOLDER", wvrPath);
        #endif
-    -->    
-    <Target AfterTargets="Build" Name="CopyWebViewRuntime" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">      
-      <ItemGroup Condition="$(PlatformTarget) == 'x86'">
-        <RUNTIME Include="..\Runtimex86\**\*.*" />
-      </ItemGroup>
-      <ItemGroup Condition="$(PlatformTarget) == 'x64'">
-        <RUNTIME Include="..\Runtimex64\**\*.*" />
-      </ItemGroup>
-      <ItemGroup Condition="$(PlatformTarget) == 'ARM64'">
-        <RUNTIME Include="..\RuntimeARM64\**\*.*" />
-      </ItemGroup>      
-       <Copy SourceFiles="@(RUNTIME)" DestinationFolder="$(TargetDir)\Runtime\%(RecursiveDir)" SkipUnchangedFiles="true" />
-    </Target>  
-     
+       
+    4. Add the following code to the .csproj file:
+    -->
+        <MauiAsset Include="..\Runtimex86\**" 
+                   LogicalName="Runtime\%(RecursiveDir)%(Filename)%(Extension)" 
+                   Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' And ('$(PlatformTarget)' == 'x86')"/>
+        <MauiAsset Include="..\Runtimex64\**" 
+                   LogicalName="Runtime\%(RecursiveDir)%(Filename)%(Extension)" 
+                   Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' And ('$(PlatformTarget)' == 'x64')"/>
+        <MauiAsset Include="..\RuntimeARM64\**" 
+                   LogicalName="Runtime\%(RecursiveDir)%(Filename)%(Extension)" 
+                   Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' And ('$(PlatformTarget)' == 'ARM64')"/>
+                   
+    </ItemGroup>
+  
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />        
+    </ItemGroup>
+ 
 
 </Project>
