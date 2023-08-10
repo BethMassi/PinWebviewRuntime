@@ -23,7 +23,7 @@ This sample shows how to use and distribute a fixed Version Windows WebView2 Run
            Environment.SetEnvironmentVariable("WEBVIEW2_BROWSER_EXECUTABLE_FOLDER", wvrPath);
    #endif
 
-4. After the existing `<MauiAsset>' element, add the following to your .csproj file:
+4. After the existing `<MauiAsset>` element, add the following to your .csproj file:
    ```
    <MauiAsset Include="..\Runtimex86\**" 
               LogicalName="Runtime\%(RecursiveDir)%(Filename)%(Extension)" 
