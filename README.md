@@ -1,4 +1,4 @@
-# Using and distributing a fixed version of the Windows Webview2 Runtime
+# Using and distributing a fixed version of the Windows Webview2 Runtime with MAUI
 This sample shows how to use and distribute a fixed Version Windows WebView2 Runtime with your MAUI App. Follow these instructions to use the sample.
 
 1. Download the Fixed version installer packages from here: https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-section
